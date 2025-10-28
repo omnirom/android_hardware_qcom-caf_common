@@ -3,24 +3,64 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-soong_config_module_type {
-    name: "mpss_firmware_symlink",
-    module_type: "install_symlink",
-    config_namespace: "rfs",
-    variables: ["mpss_firmware_symlink_target"],
-    properties: ["symlink_target"],
+cc_library_headers {
+    name: "audio_kernel_headers",
+    defaults: ["generated_kernel_header_defaults"],
 }
 
-soong_config_string_variable {
-    name: "mpss_firmware_symlink_target",
-    values: ["firmware_mnt", "firmware_modem"],
+cc_library_headers {
+    name: "qti_audio_kernel_uapi",
+    defaults: ["generated_kernel_header_defaults"],
+}
+
+cc_library_headers {
+    name: "qti_display_kernel_headers",
+    defaults: ["generated_kernel_header_defaults"],
+}
+
+cc_library_headers {
+    name: "qti_ipa_kernel_headers",
+    defaults: ["generated_kernel_header_defaults"],
+}
+
+cc_library_headers {
+    name: "qti_kernel_headers",
+    defaults: ["generated_kernel_header_defaults"],
+}
+
+cc_library_headers {
+    name: "smmu_proxy_uapi_header",
+    defaults: ["generated_kernel_header_defaults"],
+}
+
+soong_config_module_type {
+    name: "android_hardware_qtiaudio_config_default",
+    module_type: "cc_defaults",
+    config_namespace: "android_hardware_audio",
+    bool_variables: [
+        "run_64bit",
+    ],
+    properties: ["compile_multilib"],
+}
+
+android_hardware_qtiaudio_config_default {
+    name: "android_hardware_qtiaudio_config_defaults",
+
+    soong_config_variables: {
+        run_64bit: {
+            compile_multilib: "64",
+        },
+    },
 }
 
 install_symlink {
     name: "rfs_apq_gnss_hlos_symlink",
     vendor: true,
     installed_location: "rfs/apq/gnss/hlos",
-    symlink_target: "/mnt/vendor/persist/hlos_rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/hlos_rfs/shared",
+        default: "/mnt/vendor/persist/hlos_rfs/shared",
+    }),
 }
 
 install_symlink {
@@ -34,7 +74,10 @@ install_symlink {
     name: "rfs_apq_gnss_readonly_firmware_symlink",
     vendor: true,
     installed_location: "rfs/apq/gnss/readonly/firmware",
-    symlink_target: "/vendor/firmware_mnt",
+    symlink_target: select(soong_config_variable("rfs", "firmware_symlink_target"), {
+        "firmware": "/firmware",
+        default: "/vendor/firmware_mnt",
+    }),
 }
 
 install_symlink {
@@ -48,21 +91,30 @@ install_symlink {
     name: "rfs_apq_gnss_readwrite_symlink",
     vendor: true,
     installed_location: "rfs/apq/gnss/readwrite",
-    symlink_target: "/mnt/vendor/persist/rfs/apq/gnss",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/apq/gnss",
+        default: "/mnt/vendor/persist/rfs/apq/gnss",
+    }),
 }
 
 install_symlink {
     name: "rfs_apq_gnss_shared_symlink",
     vendor: true,
     installed_location: "rfs/apq/gnss/shared",
-    symlink_target: "/mnt/vendor/persist/rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/shared",
+        default: "/mnt/vendor/persist/rfs/shared",
+    }),
 }
 
 install_symlink {
     name: "rfs_mdm_adsp_hlos_symlink",
     vendor: true,
     installed_location: "rfs/mdm/adsp/hlos",
-    symlink_target: "/mnt/vendor/persist/hlos_rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/hlos_rfs/shared",
+        default: "/mnt/vendor/persist/hlos_rfs/shared",
+    }),
 }
 
 install_symlink {
@@ -76,7 +128,10 @@ install_symlink {
     name: "rfs_mdm_adsp_readonly_firmware_symlink",
     vendor: true,
     installed_location: "rfs/mdm/adsp/readonly/firmware",
-    symlink_target: "/vendor/firmware_mnt",
+    symlink_target: select(soong_config_variable("rfs", "firmware_symlink_target"), {
+        "firmware": "/firmware",
+        default: "/vendor/firmware_mnt",
+    }),
 }
 
 install_symlink {
@@ -90,21 +145,30 @@ install_symlink {
     name: "rfs_mdm_adsp_readwrite_symlink",
     vendor: true,
     installed_location: "rfs/mdm/adsp/readwrite",
-    symlink_target: "/mnt/vendor/persist/rfs/mdm/adsp",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/mdm/adsp",
+        default: "/mnt/vendor/persist/rfs/mdm/adsp",
+    }),
 }
 
 install_symlink {
     name: "rfs_mdm_adsp_shared_symlink",
     vendor: true,
     installed_location: "rfs/mdm/adsp/shared",
-    symlink_target: "/mnt/vendor/persist/rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/shared",
+        default: "/mnt/vendor/persist/rfs/shared",
+    }),
 }
 
 install_symlink {
     name: "rfs_mdm_cdsp_hlos_symlink",
     vendor: true,
     installed_location: "rfs/mdm/cdsp/hlos",
-    symlink_target: "/mnt/vendor/persist/hlos_rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/hlos_rfs/shared",
+        default: "/mnt/vendor/persist/hlos_rfs/shared",
+    }),
 }
 
 install_symlink {
@@ -118,7 +182,10 @@ install_symlink {
     name: "rfs_mdm_cdsp_readonly_firmware_symlink",
     vendor: true,
     installed_location: "rfs/mdm/cdsp/readonly/firmware",
-    symlink_target: "/vendor/firmware_mnt",
+    symlink_target: select(soong_config_variable("rfs", "firmware_symlink_target"), {
+        "firmware": "/firmware",
+        default: "/vendor/firmware_mnt",
+    }),
 }
 
 install_symlink {
@@ -132,21 +199,30 @@ install_symlink {
     name: "rfs_mdm_cdsp_readwrite_symlink",
     vendor: true,
     installed_location: "rfs/mdm/cdsp/readwrite",
-    symlink_target: "/mnt/vendor/persist/rfs/mdm/cdsp",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/mdm/cdsp",
+        default: "/mnt/vendor/persist/rfs/mdm/cdsp",
+    }),
 }
 
 install_symlink {
     name: "rfs_mdm_cdsp_shared_symlink",
     vendor: true,
     installed_location: "rfs/mdm/cdsp/shared",
-    symlink_target: "/mnt/vendor/persist/rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/shared",
+        default: "/mnt/vendor/persist/rfs/shared",
+    }),
 }
 
 install_symlink {
     name: "rfs_mdm_mpss_hlos_symlink",
     vendor: true,
     installed_location: "rfs/mdm/mpss/hlos",
-    symlink_target: "/mnt/vendor/persist/hlos_rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/hlos_rfs/shared",
+        default: "/mnt/vendor/persist/hlos_rfs/shared",
+    }),
 }
 
 install_symlink {
@@ -156,23 +232,15 @@ install_symlink {
     symlink_target: "/data/vendor/tombstones/rfs/modem",
 }
 
-mpss_firmware_symlink {
+install_symlink {
     name: "rfs_mdm_mpss_readonly_firmware_symlink",
     vendor: true,
     installed_location: "rfs/mdm/mpss/readonly/firmware",
-    soong_config_variables: {
-        mpss_firmware_symlink_target: {
-            firmware_mnt: {
-                symlink_target: "/vendor/firmware_mnt",
-            },
-            firmware_modem: {
-                symlink_target: "/vendor/firmware-modem",
-            },
-            conditions_default: {
-                symlink_target: "/vendor/firmware_mnt",
-            }
-        },
-    },
+    symlink_target: select(soong_config_variable("rfs", "mpss_firmware_symlink_target"), {
+        "firmware": "/firmware",
+        "firmware_modem": "/vendor/firmware-modem",
+        default: "/vendor/firmware_mnt",
+    }),
 }
 
 install_symlink {
@@ -186,13 +254,61 @@ install_symlink {
     name: "rfs_mdm_mpss_readwrite_symlink",
     vendor: true,
     installed_location: "rfs/mdm/mpss/readwrite",
-    symlink_target: "/mnt/vendor/persist/rfs/mdm/mpss",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/mdm/mpss",
+        default: "/mnt/vendor/persist/rfs/mdm/mpss",
+    }),
 }
 
 install_symlink {
     name: "rfs_mdm_mpss_shared_symlink",
     vendor: true,
     installed_location: "rfs/mdm/mpss/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/shared",
+        default: "/mnt/vendor/persist/rfs/shared",
+    }),
+}
+
+install_symlink {
+    name: "rfs_mdm_ois_hlos_symlink",
+    vendor: true,
+    installed_location: "rfs/mdm/ois/hlos",
+    symlink_target: "/mnt/vendor/persist/hlos_rfs/shared",
+}
+
+install_symlink {
+    name: "rfs_mdm_ois_ramdumps_symlink",
+    vendor: true,
+    installed_location: "rfs/mdm/ois/ramdumps",
+    symlink_target: "/data/vendor/tombstones/rfs/ois",
+}
+
+install_symlink {
+    name: "rfs_mdm_ois_readonly_firmware_symlink",
+    vendor: true,
+    installed_location: "rfs/mdm/ois/readonly/firmware",
+    symlink_target: "/vendor/firmware_mnt",
+}
+
+install_symlink {
+    name: "rfs_mdm_ois_readonly_vendor_firmware_symlink",
+    vendor: true,
+    installed_location: "rfs/mdm/ois/readonly/vendor/firmware",
+    symlink_target: "/vendor/firmware",
+}
+
+install_symlink {
+    name: "rfs_mdm_ois_readwrite_symlink",
+    vendor: true,
+    installed_location: "rfs/mdm/ois/readwrite",
+    symlink_target: "/mnt/vendor/persist/rfs/mdm/ois",
+}
+
+install_symlink {
+    name: "rfs_mdm_ois_shared_symlink",
+    vendor: true,
+    installed_location: "rfs/mdm/ois/shared",
     symlink_target: "/mnt/vendor/persist/rfs/shared",
 }
 
@@ -200,7 +316,10 @@ install_symlink {
     name: "rfs_mdm_slpi_hlos_symlink",
     vendor: true,
     installed_location: "rfs/mdm/slpi/hlos",
-    symlink_target: "/mnt/vendor/persist/hlos_rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/hlos_rfs/shared",
+        default: "/mnt/vendor/persist/hlos_rfs/shared",
+    }),
 }
 
 install_symlink {
@@ -214,7 +333,10 @@ install_symlink {
     name: "rfs_mdm_slpi_readonly_firmware_symlink",
     vendor: true,
     installed_location: "rfs/mdm/slpi/readonly/firmware",
-    symlink_target: "/vendor/firmware_mnt",
+    symlink_target: select(soong_config_variable("rfs", "firmware_symlink_target"), {
+        "firmware": "/firmware",
+        default: "/vendor/firmware_mnt",
+    }),
 }
 
 install_symlink {
@@ -228,21 +350,30 @@ install_symlink {
     name: "rfs_mdm_slpi_readwrite_symlink",
     vendor: true,
     installed_location: "rfs/mdm/slpi/readwrite",
-    symlink_target: "/mnt/vendor/persist/rfs/mdm/slpi",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/mdm/slpi",
+        default: "/mnt/vendor/persist/rfs/mdm/slpi",
+    }),
 }
 
 install_symlink {
     name: "rfs_mdm_slpi_shared_symlink",
     vendor: true,
     installed_location: "rfs/mdm/slpi/shared",
-    symlink_target: "/mnt/vendor/persist/rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/shared",
+        default: "/mnt/vendor/persist/rfs/shared",
+    }),
 }
 
 install_symlink {
     name: "rfs_mdm_tn_hlos_symlink",
     vendor: true,
     installed_location: "rfs/mdm/tn/hlos",
-    symlink_target: "/mnt/vendor/persist/hlos_rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/hlos_rfs/shared",
+        default: "/mnt/vendor/persist/hlos_rfs/shared",
+    }),
 }
 
 install_symlink {
@@ -256,7 +387,10 @@ install_symlink {
     name: "rfs_mdm_tn_readonly_firmware_symlink",
     vendor: true,
     installed_location: "rfs/mdm/tn/readonly/firmware",
-    symlink_target: "/vendor/firmware_mnt",
+    symlink_target: select(soong_config_variable("rfs", "firmware_symlink_target"), {
+        "firmware": "/firmware",
+        default: "/vendor/firmware_mnt",
+    }),
 }
 
 install_symlink {
@@ -270,21 +404,30 @@ install_symlink {
     name: "rfs_mdm_tn_readwrite_symlink",
     vendor: true,
     installed_location: "rfs/mdm/tn/readwrite",
-    symlink_target: "/mnt/vendor/persist/rfs/mdm/tn",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/mdm/tn",
+        default: "/mnt/vendor/persist/rfs/mdm/tn",
+    }),
 }
 
 install_symlink {
     name: "rfs_mdm_tn_shared_symlink",
     vendor: true,
     installed_location: "rfs/mdm/tn/shared",
-    symlink_target: "/mnt/vendor/persist/rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/shared",
+        default: "/mnt/vendor/persist/rfs/shared",
+    }),
 }
 
 install_symlink {
     name: "rfs_mdm_wpss_hlos_symlink",
     vendor: true,
     installed_location: "rfs/mdm/wpss/hlos",
-    symlink_target: "/mnt/vendor/persist/hlos_rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/hlos_rfs/shared",
+        default: "/mnt/vendor/persist/hlos_rfs/shared",
+    }),
 }
 
 install_symlink {
@@ -298,7 +441,10 @@ install_symlink {
     name: "rfs_mdm_wpss_readonly_firmware_symlink",
     vendor: true,
     installed_location: "rfs/mdm/wpss/readonly/firmware",
-    symlink_target: "/vendor/firmware_mnt",
+    symlink_target: select(soong_config_variable("rfs", "firmware_symlink_target"), {
+        "firmware": "/firmware",
+        default: "/vendor/firmware_mnt",
+    }),
 }
 
 install_symlink {
@@ -312,21 +458,30 @@ install_symlink {
     name: "rfs_mdm_wpss_readwrite_symlink",
     vendor: true,
     installed_location: "rfs/mdm/wpss/readwrite",
-    symlink_target: "/mnt/vendor/persist/rfs/mdm/wpss",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/mdm/wpss",
+        default: "/mnt/vendor/persist/rfs/mdm/wpss",
+    }),
 }
 
 install_symlink {
     name: "rfs_mdm_wpss_shared_symlink",
     vendor: true,
     installed_location: "rfs/mdm/wpss/shared",
-    symlink_target: "/mnt/vendor/persist/rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/shared",
+        default: "/mnt/vendor/persist/rfs/shared",
+    }),
 }
 
 install_symlink {
     name: "rfs_msm_adsp_hlos_symlink",
     vendor: true,
     installed_location: "rfs/msm/adsp/hlos",
-    symlink_target: "/mnt/vendor/persist/hlos_rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/hlos_rfs/shared",
+        default: "/mnt/vendor/persist/hlos_rfs/shared",
+    }),
 }
 
 install_symlink {
@@ -340,7 +495,10 @@ install_symlink {
     name: "rfs_msm_adsp_readonly_firmware_symlink",
     vendor: true,
     installed_location: "rfs/msm/adsp/readonly/firmware",
-    symlink_target: "/vendor/firmware_mnt",
+    symlink_target: select(soong_config_variable("rfs", "firmware_symlink_target"), {
+        "firmware": "/firmware",
+        default: "/vendor/firmware_mnt",
+    }),
 }
 
 install_symlink {
@@ -354,21 +512,30 @@ install_symlink {
     name: "rfs_msm_adsp_readwrite_symlink",
     vendor: true,
     installed_location: "rfs/msm/adsp/readwrite",
-    symlink_target: "/mnt/vendor/persist/rfs/msm/adsp",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/msm/adsp",
+        default: "/mnt/vendor/persist/rfs/msm/adsp",
+    }),
 }
 
 install_symlink {
     name: "rfs_msm_adsp_shared_symlink",
     vendor: true,
     installed_location: "rfs/msm/adsp/shared",
-    symlink_target: "/mnt/vendor/persist/rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/shared",
+        default: "/mnt/vendor/persist/rfs/shared",
+    }),
 }
 
 install_symlink {
     name: "rfs_msm_cdsp_hlos_symlink",
     vendor: true,
     installed_location: "rfs/msm/cdsp/hlos",
-    symlink_target: "/mnt/vendor/persist/hlos_rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/hlos_rfs/shared",
+        default: "/mnt/vendor/persist/hlos_rfs/shared",
+    }),
 }
 
 install_symlink {
@@ -382,7 +549,10 @@ install_symlink {
     name: "rfs_msm_cdsp_readonly_firmware_symlink",
     vendor: true,
     installed_location: "rfs/msm/cdsp/readonly/firmware",
-    symlink_target: "/vendor/firmware_mnt",
+    symlink_target: select(soong_config_variable("rfs", "firmware_symlink_target"), {
+        "firmware": "/firmware",
+        default: "/vendor/firmware_mnt",
+    }),
 }
 
 install_symlink {
@@ -396,21 +566,30 @@ install_symlink {
     name: "rfs_msm_cdsp_readwrite_symlink",
     vendor: true,
     installed_location: "rfs/msm/cdsp/readwrite",
-    symlink_target: "/mnt/vendor/persist/rfs/msm/cdsp",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/msm/cdsp",
+        default: "/mnt/vendor/persist/rfs/msm/cdsp",
+    }),
 }
 
 install_symlink {
     name: "rfs_msm_cdsp_shared_symlink",
     vendor: true,
     installed_location: "rfs/msm/cdsp/shared",
-    symlink_target: "/mnt/vendor/persist/rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/shared",
+        default: "/mnt/vendor/persist/rfs/shared",
+    }),
 }
 
 install_symlink {
     name: "rfs_msm_mpss_hlos_symlink",
     vendor: true,
     installed_location: "rfs/msm/mpss/hlos",
-    symlink_target: "/mnt/vendor/persist/hlos_rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/hlos_rfs/shared",
+        default: "/mnt/vendor/persist/hlos_rfs/shared",
+    }),
 }
 
 install_symlink {
@@ -420,23 +599,16 @@ install_symlink {
     symlink_target: "/data/vendor/tombstones/rfs/modem",
 }
 
-mpss_firmware_symlink {
+install_symlink {
     name: "rfs_msm_mpss_readonly_firmware_symlink",
     vendor: true,
     installed_location: "rfs/msm/mpss/readonly/firmware",
-    soong_config_variables: {
-        mpss_firmware_symlink_target: {
-            firmware_mnt: {
-                symlink_target: "/vendor/firmware_mnt",
-            },
-            firmware_modem: {
-                symlink_target: "/vendor/firmware-modem",
-            },
-            conditions_default: {
-                symlink_target: "/vendor/firmware_mnt",
-            }
-        },
-    },
+    symlink_target: select(soong_config_variable("rfs", "mpss_firmware_symlink_target"), {
+        "firmware": "/firmware",
+        "firmware_modem": "/vendor/firmware-modem",
+        "modem_firmware": "/vendor/modem_firmware",
+        default: "/vendor/firmware_mnt",
+    }),
 }
 
 install_symlink {
@@ -450,13 +622,61 @@ install_symlink {
     name: "rfs_msm_mpss_readwrite_symlink",
     vendor: true,
     installed_location: "rfs/msm/mpss/readwrite",
-    symlink_target: "/mnt/vendor/persist/rfs/msm/mpss",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/msm/mpss",
+        default: "/mnt/vendor/persist/rfs/msm/mpss",
+    }),
 }
 
 install_symlink {
     name: "rfs_msm_mpss_shared_symlink",
     vendor: true,
     installed_location: "rfs/msm/mpss/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/shared",
+        default: "/mnt/vendor/persist/rfs/shared",
+    }),
+}
+
+install_symlink {
+    name: "rfs_msm_ois_hlos_symlink",
+    vendor: true,
+    installed_location: "rfs/msm/ois/hlos",
+    symlink_target: "/mnt/vendor/persist/hlos_rfs/shared",
+}
+
+install_symlink {
+    name: "rfs_msm_ois_ramdumps_symlink",
+    vendor: true,
+    installed_location: "rfs/msm/ois/ramdumps",
+    symlink_target: "/data/vendor/tombstones/rfs/ois",
+}
+
+install_symlink {
+    name: "rfs_msm_ois_readonly_firmware_symlink",
+    vendor: true,
+    installed_location: "rfs/msm/ois/readonly/firmware",
+    symlink_target: "/vendor/firmware_mnt",
+}
+
+install_symlink {
+    name: "rfs_msm_ois_readonly_vendor_firmware_symlink",
+    vendor: true,
+    installed_location: "rfs/msm/ois/readonly/vendor/firmware",
+    symlink_target: "/vendor/firmware",
+}
+
+install_symlink {
+    name: "rfs_msm_ois_readwrite_symlink",
+    vendor: true,
+    installed_location: "rfs/msm/ois/readwrite",
+    symlink_target: "/mnt/vendor/persist/rfs/msm/ois",
+}
+
+install_symlink {
+    name: "rfs_msm_ois_shared_symlink",
+    vendor: true,
+    installed_location: "rfs/msm/ois/shared",
     symlink_target: "/mnt/vendor/persist/rfs/shared",
 }
 
@@ -464,7 +684,10 @@ install_symlink {
     name: "rfs_msm_slpi_hlos_symlink",
     vendor: true,
     installed_location: "rfs/msm/slpi/hlos",
-    symlink_target: "/mnt/vendor/persist/hlos_rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/hlos_rfs/shared",
+        default: "/mnt/vendor/persist/hlos_rfs/shared",
+    }),
 }
 
 install_symlink {
@@ -478,7 +701,10 @@ install_symlink {
     name: "rfs_msm_slpi_readonly_firmware_symlink",
     vendor: true,
     installed_location: "rfs/msm/slpi/readonly/firmware",
-    symlink_target: "/vendor/firmware_mnt",
+    symlink_target: select(soong_config_variable("rfs", "firmware_symlink_target"), {
+        "firmware": "/firmware",
+        default: "/vendor/firmware_mnt",
+    }),
 }
 
 install_symlink {
@@ -492,21 +718,30 @@ install_symlink {
     name: "rfs_msm_slpi_readwrite_symlink",
     vendor: true,
     installed_location: "rfs/msm/slpi/readwrite",
-    symlink_target: "/mnt/vendor/persist/rfs/msm/slpi",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/msm/slpi",
+        default: "/mnt/vendor/persist/rfs/msm/slpi",
+    }),
 }
 
 install_symlink {
     name: "rfs_msm_slpi_shared_symlink",
     vendor: true,
     installed_location: "rfs/msm/slpi/shared",
-    symlink_target: "/mnt/vendor/persist/rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/shared",
+        default: "/mnt/vendor/persist/rfs/shared",
+    }),
 }
 
 install_symlink {
     name: "rfs_msm_wpss_hlos_symlink",
     vendor: true,
     installed_location: "rfs/msm/wpss/hlos",
-    symlink_target: "/mnt/vendor/persist/hlos_rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/hlos_rfs/shared",
+        default: "/mnt/vendor/persist/hlos_rfs/shared",
+    }),
 }
 
 install_symlink {
@@ -520,7 +755,10 @@ install_symlink {
     name: "rfs_msm_wpss_readonly_firmware_symlink",
     vendor: true,
     installed_location: "rfs/msm/wpss/readonly/firmware",
-    symlink_target: "/vendor/firmware_mnt",
+    symlink_target: select(soong_config_variable("rfs", "firmware_symlink_target"), {
+        "firmware": "/firmware",
+        default: "/vendor/firmware_mnt",
+    }),
 }
 
 install_symlink {
@@ -534,14 +772,20 @@ install_symlink {
     name: "rfs_msm_wpss_readwrite_symlink",
     vendor: true,
     installed_location: "rfs/msm/wpss/readwrite",
-    symlink_target: "/mnt/vendor/persist/rfs/msm/wpss",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/msm/wpss",
+        default: "/mnt/vendor/persist/rfs/msm/wpss",
+    }),
 }
 
 install_symlink {
     name: "rfs_msm_wpss_shared_symlink",
     vendor: true,
     installed_location: "rfs/msm/wpss/shared",
-    symlink_target: "/mnt/vendor/persist/rfs/shared",
+    symlink_target: select(soong_config_variable("rfs", "persist_symlink_target"), {
+        "persist": "/persist/rfs/shared",
+        default: "/mnt/vendor/persist/rfs/shared",
+    }),
 }
 
 mkdir {
@@ -629,6 +873,29 @@ prebuilt_hidl_interfaces {
     interfaces: [
         "vendor.qti.hardware.factory@1.0::IFactory",
         "vendor.qti.hardware.factory@1.1::IFactory",
+    ],
+}
+
+prebuilt_hidl_interfaces {
+     name: "hidl_vendor_qti_hardware_iop_interface",
+     interfaces: [
+        "vendor.qti.hardware.iop@2.0::IIop",
+     ],
+}
+
+prebuilt_hidl_interfaces {
+    name: "hidl_vendor_qti_hardware_limits_interface",
+    interfaces: [
+        "vendor.qti.hardware.limits@1.0::ILimits",
+        "vendor.qti.hardware.limits@1.1::ILimits",
+        "vendor.qti.hardware.limits@1.2::ILimits",
+    ],
+}
+
+prebuilt_hidl_interfaces {
+    name: "hidl_vendor_qti_hardware_sigma_miracast_interface",
+    interfaces: [
+        "vendor.qti.hardware.sigma_miracast@1.0::Isigma_miracast",
     ],
 }
 
